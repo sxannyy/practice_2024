@@ -4,8 +4,14 @@ from datetime import date
 import subprocess
 import os
 import asyncio
+import shutil
 
 directory = "./data/"
+
+def delete_everything_in_folder(folder_path):
+    shutil.rmtree(folder_path)
+    os.mkdir(folder_path)
+
 
 async def run_command(command):
     process = await asyncio.create_subprocess_shell(
@@ -40,6 +46,8 @@ async def decompress_all_data():
 
 
 async def download_info(date: date):
+    delete_everything_in_folder(f'{directory}')
+
     date = date.strftime("%Y-%d-%m")
 
     link = f"https://api.simurg.space/datafiles/map_files?date={date}"
