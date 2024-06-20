@@ -104,7 +104,7 @@ def run_asyncio_job(job):
 
 if __name__ == "__main__":
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(lambda: run_asyncio_job(get_info), 'cron', hour=23, minute=18)
+    scheduler.add_job(lambda: run_asyncio_job(get_info), 'cron', hour=23, minute=0)
     scheduler.start()
 
     try:
