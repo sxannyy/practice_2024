@@ -3,9 +3,8 @@ import time
 import os
 import sys
 
-
 def process_file(folder_path, filename):
-    with open(f'./{folder_path}/{filename}.rnx') as obs_file:
+    with open(f'{folder_path}/{filename}.rnx') as obs_file:
         reader = rnx(obs_file)
         prev_epoch = None
         for tec in reader:
@@ -30,7 +29,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     date = sys.argv[1]
-    folder_path = os.path.join("data", date)
+    folder_path = os.path.join("/home/ivan/praktika/data", date)
     filename = sys.argv[2]
     filename_path = folder_path + '/' + sys.argv[2] + '.rnx'
     if not os.path.exists(folder_path):

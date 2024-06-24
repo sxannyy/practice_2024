@@ -4,18 +4,18 @@ import sys
 def create_service_file(date, filename):
     service_name = f"publisher_{date}_{filename}.service"
     service_content = f"""
-    [Unit]
-    Description=Publisher service file {filename} for date {date}
-    After=network.target
+[Unit]
+Description=Publisher service file {filename} for date {date}
+After=network.target
 
-    [Service]
-    Type=notify
-    ExecStart=/usr/bin/python3 /home/ivan/praktika/publisher.py {date} {filename}
-    Restart=on-failure
+[Service]
+Type=simple
+ExecStart=/bin/python /home/ivan/praktika/publisher.py {date} {filename}
+Restart=on-failure
 
-    [Install]
-    WantedBy=default.target
-    """
+[Install]
+WantedBy=default.target
+"""
 
     service_dir = "/etc/systemd/system/"
     service_path = os.path.join(service_dir, service_name)
@@ -24,11 +24,10 @@ def create_service_file(date, filename):
         with open(service_path, "w") as service_file:
             service_file.write(service_content)
         print(f"Created service file: {service_path}")
+        return service_name
     except PermissionError:
-        print(f"Permission denied: could not create {service_path}. Try running the script with sudo.")
-
-    
-    print(f"Created service file: {service_path}")
+        print(f"Permission denied: {service_path}")
+        return
     
 
 if __name__ == "__main__":
@@ -45,6 +44,7 @@ if __name__ == "__main__":
     
     service_files = []
     for filename in os.listdir(folder_path):
+        print(service_files)
         if filename.endswith(".rnx"):
             file_base = os.path.splitext(filename)[0]
             service_file = create_service_file(date, file_base)
