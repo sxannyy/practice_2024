@@ -32,7 +32,7 @@ WantedBy=default.target
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: generate_services.py <date>")
+        print("Usage: create_services.py <date>")
         sys.exit(1)
 
     date = sys.argv[1]

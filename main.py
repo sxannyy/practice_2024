@@ -9,7 +9,7 @@ from api.handlers.login_router import login_router
 # блок с API ROUTES #
 #####################
 
-app = FastAPI(title="MobileDogs_K_and_S")
+app = FastAPI(title="practice_2024")
 
 main_api_router = APIRouter() # главный router
 

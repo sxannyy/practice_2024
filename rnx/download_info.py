@@ -1,12 +1,11 @@
 import sys
 import zipfile
 import requests
-from datetime import date, timedelta
-import subprocess
+from datetime import date, datetime, timedelta
 import os
 import asyncio
 import shutil
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from functions import run_command
 
 
 data_dir = './data/'
@@ -17,16 +16,6 @@ def delete_everything_in_folder(folder_path):
         shutil.rmtree(folder_path)
         os.mkdir(folder_path)
 
-async def run_command(command):
-    process = await asyncio.create_subprocess_shell(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    if process.returncode != 0:
-        print(f"Error running command {command}: {stderr.decode().strip()}")
-    return stdout, stderr
 
 async def decompress_all_data(directory):
     await run_command(f"gunzip {data_dir}{directory}*.crx.gz; gunzip {data_dir}{directory}*.24d.Z")
@@ -62,7 +51,7 @@ def unzip_and_delete(zip_path, extract_to):
 
 
 async def download_info(date: date):
-    delete_everything_in_folder(f'{data_dir}{(date - timedelta(days=2)).strftime("%Y-%d-%m")}')
+    delete_everything_in_folder(f'{data_dir}{(date - timedelta(days=6)).strftime("%Y-%d-%m")}')
     date = date.strftime("%Y-%d-%m")
     directory = f"{date}/"
 
@@ -94,20 +83,5 @@ async def download_info(date: date):
     await decompress_all_data(directory)
 
 async def get_info():
-    await download_info(date(2024,1,4))
+    await download_info(date.today() - timedelta(days=5))
 
-def run_asyncio_job(job):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(job())
-    loop.close()
-
-if __name__ == "__main__":
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(lambda: run_asyncio_job(get_info), 'cron', hour=23, minute=0)
-    scheduler.start()
-
-    try:
-        asyncio.get_event_loop().run_forever()
-    except (KeyboardInterrupt, SystemExit):
-        pass

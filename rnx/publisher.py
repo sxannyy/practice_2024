@@ -11,7 +11,7 @@ def process_file(folder_path, filename):
             if prev_epoch is None:
                 prev_epoch = tec.timestamp
             if tec.timestamp != prev_epoch:
-                time.sleep(30)
+                time.sleep(5)
                 prev_epoch = tec.timestamp
             print(
                 '{} {}: {} {}'.format(
