@@ -17,7 +17,7 @@ from api.actions.user import _update_user
 from api.actions.user import _get_user_by_subs
 from api.actions.user import check_user_permissions
 
-from api.schemas import DeleteUserResponse, ShowSubs
+from api.schemas import DeleteUserResponse, ShowSubs, ShowTopics
 from api.schemas import ShowUser
 from api.schemas import UpdatedUserResponse
 from api.schemas import UpdateUserRequest
@@ -27,6 +27,7 @@ from api.actions.auth import get_current_user_from_token
 
 from db.models import User
 from db.session import get_db
+from rnx.functions import get_pub_names
 
 logger = getLogger(__name__)
 
@@ -260,3 +261,10 @@ async def revoke_admin_privilege(
         logger.error(err)
         raise HTTPException(status_code=503, detail=f"Database error: {err}")
     return UpdatedUserResponse(updated_user_id=updated_user_id)
+
+@user_router.get("/get_topics/", response_model=ShowTopics)
+async def get_topics(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> ShowTopics:
+    return ShowTopics(topic_names=get_pub_names('2024-02-01'))

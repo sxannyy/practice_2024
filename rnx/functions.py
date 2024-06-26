@@ -47,6 +47,9 @@ def delete_publisher_services(directory='/etc/systemd/system'):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
 def create_services():
     run_command(f'sudo create_services.py {(date.today() - timedelta(days=2)).strftime("%Y-%d-%m")}')
+
+def get_pub_names(date: date):
+    files = os.listdir(f'/home/sxannyy/praktika/data/{date}')
+    return [names[:3] for names in files]

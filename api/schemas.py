@@ -1,6 +1,6 @@
 import re
 import uuid
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import HTTPException
 from pydantic import BaseModel
@@ -29,6 +29,9 @@ class ShowSubs(TunedModel):
     user_id: uuid.UUID
     email: EmailStr
     subscription: str
+
+class ShowTopics(TunedModel):
+    topic_names: List[str]
 
 class UserCreate(BaseModel):
     name: str
