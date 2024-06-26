@@ -7,13 +7,23 @@ def process_file(folder_path, filename):
     with open(f'{folder_path}/{filename}.rnx') as obs_file:
         reader = rnx(obs_file)
         prev_epoch = None
+        data = []
+        prev_system_time = time.time()
+        make_sleep = False
         for tec in reader:
+            while make_sleep and time.time() - prev_system_time <= 30:
+                pass
+            make_sleep = False
             if prev_epoch is None:
                 prev_epoch = tec.timestamp
             if tec.timestamp != prev_epoch:
-                time.sleep(5)
+                print("Prepare for sleeping", prev_epoch, tec.timestamp, flush=True)
+                yield data
+                prev_system_time = time.time()
+                make_sleep = True
+                data = []
                 prev_epoch = tec.timestamp
-            print(
+            data.append( 
                 '{} {}: {} {}'.format(
                     tec.timestamp,
                     tec.satellite,
@@ -40,4 +50,6 @@ if __name__ == "__main__":
         print(f"File {filename_path} does not exist.")
         sys.exit(2)
 
-    process_file(folder_path, filename)
+    for data_portion in process_file(folder_path, filename):
+        for item in data_portion:
+            print(item, flush=True)

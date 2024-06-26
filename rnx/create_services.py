@@ -1,8 +1,9 @@
 import os
 import sys
+from functions import delete_publisher_services
 
 def create_service_file(date, filename):
-    service_name = f"publisher_{date}_{filename}.service"
+    service_name = f"publisher_{date}_{filename[:3]}.service"
     service_content = f"""
 [Unit]
 Description=Publisher service file {filename} for date {date}
@@ -10,7 +11,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/python /home/ivan/praktika/publisher.py {date} {filename}
+ExecStart=/bin/python /home/ivan/praktika/rnx/publisher.py {date} {filename}
 Restart=on-failure
 
 [Install]
@@ -36,12 +37,14 @@ if __name__ == "__main__":
         sys.exit(1)
 
     date = sys.argv[1]
-    folder_path = os.path.join("data", date)
+    folder_path = os.path.join("./data", date)
 
     if not os.path.exists(folder_path):
         print(f"Folder {folder_path} does not exist.")
         sys.exit(1)
     
+    delete_publisher_services()
+
     service_files = []
     for filename in os.listdir(folder_path):
         print(service_files)
@@ -51,9 +54,11 @@ if __name__ == "__main__":
             if service_file:
                 service_files.append(service_file)
 
+
     print("Reloading systemd manager configuration...")
     os.system("sudo systemctl daemon-reload")
 
     for service in service_files:
         print(f"Enabling and starting service: {service}")
         os.system(f"sudo systemctl enable --now {service}")
+        os.system(f"sudo systemctl restart {service}")
