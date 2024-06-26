@@ -3,3 +3,6 @@
 /rnx/__pycache__
 /api/__pycache__
 /api/handlers/__pycache__
+/api/actions/__pycache__
+/migrations
+/db/__pycache__

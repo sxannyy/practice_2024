@@ -6,6 +6,8 @@ from sqlalchemy import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from db.models import PortalRole
+
 from db.models import User
 
 ##########################
@@ -22,6 +24,7 @@ class UserDAL:
         surname: str,
         email: str,
         hashed_password: str,
+        roles: list[PortalRole],
 
     ) -> User:
         new_user = User(
@@ -29,6 +32,7 @@ class UserDAL:
             surname=surname,
             email=email,
             hashed_password=hashed_password,
+            roles=roles,
         )
         self.db_session.add(new_user)
         await self.db_session.flush()
