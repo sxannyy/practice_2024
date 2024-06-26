@@ -25,7 +25,6 @@ from api.actions.auth import get_current_user_from_token
 from db.models import User
 from db.session import get_db
 
-
 logger = getLogger(__name__)
 
 user_router = APIRouter()
@@ -62,7 +61,6 @@ async def delete_user(
         )
     return DeleteUserResponse(deleted_user_id=deleted_user_id)
 
-
 @user_router.get("/get_user_by_id/", response_model=ShowUser)
 async def get_user_by_id(
     user_id: UUID,
@@ -73,6 +71,18 @@ async def get_user_by_id(
     if user is None:
         raise HTTPException(
             status_code=404, detail=f"User with id {user_id} not found."
+        )
+    return user
+
+@user_router.get("/get_all_user_subs/", response_model=ShowSubs)
+async def get_all_user_subs(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> ShowSubs:
+    user = await _get_user_by_id(current_user.user_id, db)
+    if user.subscription is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id {current_user.user_id} has no subscriptions."
         )
     return user
 

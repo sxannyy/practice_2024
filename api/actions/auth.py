@@ -16,14 +16,12 @@ from hashing import Hasher
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
-
 async def _get_user_by_email_for_auth(email: str, session: AsyncSession):
     async with session.begin():
         user_dal = UserDAL(session)
         return await user_dal.get_user_by_email(
             email=email,
         )
-
 
 async def authenticate_user(
     email: str, password: str, db: AsyncSession
@@ -34,7 +32,6 @@ async def authenticate_user(
     if not Hasher.verify_password(password, user.hashed_password):
         return 
     return user
-
 
 async def get_current_user_from_token(
     token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)

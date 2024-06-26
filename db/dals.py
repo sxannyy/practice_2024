@@ -12,7 +12,6 @@ from db.models import User
 # БЛОК ИНТЕРАКЦИЙ С DALS #
 ##########################
 
-
 class UserDAL:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session

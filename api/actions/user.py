@@ -61,4 +61,4 @@ async def _get_user_by_subs(subscription, session) -> Union[List[User], None]:
             subscription=subscription,
         )
         if user is not None:
-            return user        
+            return user

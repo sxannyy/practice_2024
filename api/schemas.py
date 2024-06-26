@@ -14,11 +14,9 @@ from pydantic import validator
 
 LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
 
-
 class TunedModel(BaseModel):
     class Config:
         orm_mode = True
-
 
 class ShowUser(TunedModel):
     user_id: uuid.UUID
@@ -31,7 +29,6 @@ class ShowSubs(TunedModel):
     user_id: uuid.UUID
     email: EmailStr
     subscription: str
-
 
 class UserCreate(BaseModel):
     name: str
@@ -55,14 +52,11 @@ class UserCreate(BaseModel):
             )
         return value
 
-
 class DeleteUserResponse(BaseModel):
     deleted_user_id: uuid.UUID
 
-
 class UpdatedUserResponse(BaseModel):
     updated_user_id: uuid.UUID
-
 
 class UpdateUserRequest(BaseModel):
     name: Optional[constr(min_length=1)]
