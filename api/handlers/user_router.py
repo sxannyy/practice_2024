@@ -1,7 +1,8 @@
 from logging import getLogger
+from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -11,8 +12,9 @@ from api.actions.user import _create_new_user
 from api.actions.user import _delete_user
 from api.actions.user import _get_user_by_id
 from api.actions.user import _update_user
+from api.actions.user import _get_user_by_subs
 
-from api.schemas import DeleteUserResponse
+from api.schemas import DeleteUserResponse, ShowSubs
 from api.schemas import ShowUser
 from api.schemas import UpdatedUserResponse
 from api.schemas import UpdateUserRequest
@@ -48,6 +50,11 @@ async def delete_user(
         raise HTTPException(
             status_code=404, detail=f"User with id {user_id} not found."
         )
+    if user_for_deletion != user_id(
+    target_user=user_for_deletion,
+    current_user=current_user,
+    ):
+        raise HTTPException(status_code=403, detail="Forbidden.")
     deleted_user_id = await _delete_user(user_id, db)
     if deleted_user_id is None:
         raise HTTPException(
@@ -69,6 +76,30 @@ async def get_user_by_id(
         )
     return user
 
+@user_router.get("/get_user_id/", response_model=ShowUser)
+async def get_user(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> ShowUser:
+    user = await _get_user_by_id(current_user.user_id, db)
+    if user is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id {current_user.user_id} not found."
+        )
+    return user
+
+@user_router.get("/get_user_by_subs/", response_model=List[ShowSubs])
+async def get_user_by_subs(
+    subscription: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> List[ShowSubs]:
+    user = await _get_user_by_subs(subscription, db)
+    if user == []:
+        raise HTTPException(
+            status_code=404, detail=f"User with such subs not found."
+        )
+    return user
 
 @user_router.patch("/update_user_by_id/", response_model=UpdatedUserResponse)
 async def update_user_by_id(

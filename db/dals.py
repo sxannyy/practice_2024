@@ -23,6 +23,7 @@ class UserDAL:
         surname: str,
         email: str,
         hashed_password: str,
+
     ) -> User:
         new_user = User(
             name=name,
@@ -59,6 +60,12 @@ class UserDAL:
         user_row = res.fetchone()
         if user_row is not None:
             return user_row[0]
+    
+    async def get_user_by_subs(self, subscription: str) -> Union[User, None]:
+        query = select(User).where(User.subscription.ilike(f"%{subscription}%"))
+        res = await self.db_session.execute(query)
+        users = res.scalars().all()
+        return users
 
     async def update_user(self, user_id: UUID, **kwargs) -> Union[UUID, None]:
         query = (

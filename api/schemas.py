@@ -27,6 +27,12 @@ class ShowUser(TunedModel):
     email: EmailStr
     is_active: bool
 
+class ShowSubs(TunedModel):
+    user_id: uuid.UUID
+    email: EmailStr
+    subscription: str
+
+
 class UserCreate(BaseModel):
     name: str
     surname: str

@@ -1,7 +1,5 @@
-from typing import Union
+from typing import List, Union
 from uuid import UUID
-
-from fastapi import HTTPException
 
 from api.schemas import ShowUser
 from api.schemas import UserCreate
@@ -10,7 +8,6 @@ from db.dals import UserDAL
 from db.models import User
 
 from hashing import Hasher
-
 
 async def _create_new_user(body: UserCreate, session) -> ShowUser:
     async with session.begin():
@@ -27,8 +24,8 @@ async def _create_new_user(body: UserCreate, session) -> ShowUser:
             surname=user.surname,
             email=user.email,
             is_active=user.is_active,
+            subscription=user.subscription,
         )
-
 
 async def _delete_user(user_id, session) -> Union[UUID, None]:
     async with session.begin():
@@ -37,7 +34,6 @@ async def _delete_user(user_id, session) -> Union[UUID, None]:
             user_id=user_id,
         )
         return deleted_user_id
-
 
 async def _update_user(
     updated_user_params: dict, user_id: UUID, session
@@ -49,7 +45,6 @@ async def _update_user(
         )
         return updated_user_id
 
-
 async def _get_user_by_id(user_id, session) -> Union[User, None]:
     async with session.begin():
         user_dal = UserDAL(session)
@@ -58,3 +53,12 @@ async def _get_user_by_id(user_id, session) -> Union[User, None]:
         )
         if user is not None:
             return user
+        
+async def _get_user_by_subs(subscription, session) -> Union[List[User], None]:
+    async with session.begin():
+        user_dal = UserDAL(session)
+        user = await user_dal.get_user_by_subs(
+            subscription=subscription,
+        )
+        if user is not None:
+            return user        
