@@ -2,6 +2,8 @@ from logging import getLogger
 from typing import List
 from uuid import UUID
 
+import string
+
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -142,6 +144,54 @@ async def update_user_by_id(
         logger.error(err)
         raise HTTPException(status_code=503, detail=f"Database error: {err}")
     return UpdatedUserResponse(updated_user_id=updated_user_id)
+
+@user_router.patch("/subscribe/", response_model=UpdatedUserResponse)
+async def subscribe(
+    subscription: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> UpdatedUserResponse:
+    if not (len(subscription) == 3 and subscription.isalpha() and all(char in string.ascii_letters for char in subscription)):
+        raise HTTPException(status_code=422, detail=f"The name of the topic should contain 3 letters.")
+    if subscription in current_user.subscription: 
+        raise HTTPException(status_code=422, detail=f"The name of the topic already exists.")
+    if current_user.subscription is not None:
+        updated_user_params = {"subscription": current_user.subscription + ", " + subscription}
+    else:
+        updated_user_params = {"subscription": subscription}
+    try:
+        updated_user_id = await _update_user(
+            updated_user_params=updated_user_params, session=db, user_id=current_user.user_id
+        )
+    except IntegrityError as err:
+        logger.error(err)
+        raise HTTPException(status_code=503, detail=f"Database error: {err}")
+    return UpdatedUserResponse(updated_user_id=updated_user_id)
+
+@user_router.patch("/unsubscribe/", response_model=UpdatedUserResponse)
+async def unsubscribe(
+    subscription: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+) -> UpdatedUserResponse:
+    if not (len(subscription) == 3 and subscription.isalpha() and all(char in string.ascii_letters for char in subscription)):
+        raise HTTPException(status_code=422, detail=f"The name of the topic should contain 3 letters.")
+    if current_user.subscription is not None:
+        if ',' in current_user.subscription:
+            updated_user_params = {"subscription": current_user.subscription.replace(f'{subscription}, ', '')}
+        else:
+            updated_user_params = {"subscription": None}
+    else:
+        raise HTTPException(status_code=503, detail=f"No subscriptions.")
+    try:
+        updated_user_id = await _update_user(
+            updated_user_params=updated_user_params, session=db, user_id=current_user.user_id
+        )
+    except IntegrityError as err:
+        logger.error(err)
+        raise HTTPException(status_code=503, detail=f"Database error: {err}")
+    return UpdatedUserResponse(updated_user_id=updated_user_id)
+
 
 @user_router.patch("/admin_privilege/grant_admin_privilege/", response_model=UpdatedUserResponse)
 async def grant_admin_privilege(
