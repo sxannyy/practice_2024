@@ -1,7 +1,12 @@
+from datetime import datetime
+from hashlib import md5
 from gnss_tec import rnx
+import paho.mqtt.client as mqtt_client
 import time
 import os
 import sys
+
+broker="broker.emqx.io"
 
 def process_file(folder_path, filename):
     with open(f'{folder_path}/{filename}.rnx') as obs_file:
@@ -50,6 +55,18 @@ if __name__ == "__main__":
         print(f"File {filename_path} does not exist.")
         sys.exit(2)
 
+    client = mqtt_client.Client(
+        mqtt_client.CallbackAPIVersion.VERSION1, 
+        md5(str(datetime.now()).encode('utf-8')).hexdigest()
+    )
+
+    client.connect(broker)
+    client.loop_start() 
+
     for data_portion in process_file(folder_path, filename):
         for item in data_portion:
-            print(item, flush=True)
+            client.publish(f"rnx/data/{filename[:3]}", item)
+            # print(item, flush=True)
+
+    client.disconnect()
+    client.loop_stop()
