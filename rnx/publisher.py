@@ -15,7 +15,18 @@ def process_file(folder_path, filename):
         data = []
         prev_system_time = time.time()
         make_sleep = False
+        time_flag = True
         for tec in reader:
+            time_str = str(tec.timestamp)
+            given_time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S").time()
+            current_time = datetime.now().time()
+            given_seconds = given_time.hour * 3600 + given_time.minute * 60 + given_time.second
+            current_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
+            difference_in_seconds = current_seconds - given_seconds
+
+            if difference_in_seconds > 30:
+                print(difference_in_seconds)
+                continue
             while make_sleep and time.time() - prev_system_time <= 30:
                 pass
             make_sleep = False
@@ -36,6 +47,10 @@ def process_file(folder_path, filename):
                     tec.p_range_tec,
                 )
             )
+        data.append( 
+            'Данные кончились, следующая порция данных добавиться после некоторой задержки'
+        )
+        yield data
 
 
 if __name__ == "__main__":

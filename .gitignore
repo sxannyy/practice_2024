@@ -6,3 +6,7 @@
 /api/actions/__pycache__
 /migrations
 /db/__pycache__
+/tests/__pycache__
+/tests/migrations
+/tests/test_handlers/__pycache__
+./migrations

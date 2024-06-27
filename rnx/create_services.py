@@ -3,7 +3,7 @@ import sys
 from functions import delete_publisher_services
 
 def create_service_file(date, filename):
-    service_name = f"publisher_{date}_{filename[:3]}.service"
+    service_name = f"publisher_{filename[:3]}.service"
     service_content = f"""
 [Unit]
 Description=Publisher service file {filename} for date {date}

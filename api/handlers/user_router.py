@@ -154,8 +154,10 @@ async def subscribe(
 ) -> UpdatedUserResponse:
     if not (len(subscription) == 3 and subscription.isalpha() and all(char in string.ascii_letters for char in subscription)):
         raise HTTPException(status_code=422, detail=f"The name of the topic should contain 3 letters.")
-    if subscription in current_user.subscription: 
+    if current_user.subscription is not None and subscription in current_user.subscription: 
         raise HTTPException(status_code=422, detail=f"The name of the topic already exists.")
+    if subscription not in get_pub_names('2024-02-01'):
+        raise HTTPException(status_code=404, detail=f"The name of the topic doesn't exist.")
     if current_user.subscription is not None:
         updated_user_params = {"subscription": current_user.subscription + ", " + subscription}
     else:

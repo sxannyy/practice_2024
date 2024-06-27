@@ -24,9 +24,9 @@ async def decompress_all_data(directory):
     for file in files:
         filename = file.split('.')[0]
         if file.endswith('.24d'):
-            command = f"./CRX2RNX {data_dir}{directory}{filename}.24d"
+            command = f"./rnx/CRX2RNX {data_dir}{directory}{filename}.24d"
         else:
-            command = f"./CRX2RNX {data_dir}{directory}{filename}.crx"
+            command = f"./rnx/CRX2RNX {data_dir}{directory}{filename}.crx"
         tasks.append(run_command(command))
     
     await asyncio.gather(*tasks)
@@ -83,5 +83,4 @@ async def download_info(date: date):
     await decompress_all_data(directory)
 
 async def get_info():
-    await download_info(date.today() - timedelta(days=5))
-
+    await download_info(date.today() - timedelta(days=4, weeks=25))
