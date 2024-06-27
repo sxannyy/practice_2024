@@ -5,7 +5,6 @@ import paho.mqtt.client as mqtt_client
 import time
 import os
 import sys
-from logger_settings import logger 
 
 
 broker="broker.emqx.io"
@@ -27,7 +26,6 @@ def process_file(folder_path, filename):
             difference_in_seconds = current_seconds - given_seconds
 
             if difference_in_seconds > 30:
-                print(difference_in_seconds, flush=True)
                 continue
             while make_sleep and time.time() - prev_system_time <= 30:
                 pass
@@ -36,7 +34,6 @@ def process_file(folder_path, filename):
                 prev_epoch = tec.timestamp
             if tec.timestamp != prev_epoch:
                 print("Prepare for sleeping", prev_epoch, tec.timestamp, flush=True)
-                logger.info('Prepare for sleeping ' + prev_epoch + ' ' + tec.timestamp)
                 yield data
                 prev_system_time = time.time()
                 make_sleep = True
@@ -53,7 +50,6 @@ def process_file(folder_path, filename):
         data.append( 
             'Данные кончились, следующая порция данных добавиться после некоторой задержки'
         )
-        logger.warning('Данные кончились, следующая порция данных добавиться после некоторой задержки')
         yield data
 
 
@@ -68,12 +64,10 @@ if __name__ == "__main__":
     filename_path = folder_path + '/' + sys.argv[2] + '.rnx'
     if not os.path.exists(folder_path):
         print(f"Folder {folder_path} does not exist.")
-        logger.error(f"Folder {folder_path} does not exist.")
         sys.exit(1)
     
     if not os.path.exists(filename_path):
         print(f"File {filename_path} does not exist.")
-        logger.error(f"File {filename_path} does not exist.")
         sys.exit(2)
 
     client = mqtt_client.Client(

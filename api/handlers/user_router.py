@@ -181,6 +181,7 @@ async def unsubscribe(
     if not (len(subscription) == 3 and subscription.isalpha() and all(char in string.ascii_letters for char in subscription)):
         raise HTTPException(status_code=422, detail=f"The name of the topic should contain 3 letters.")
     if current_user.subscription is not None:
+        print(current_user.subscription)
         if ',' in current_user.subscription:
             updated_user_params = {"subscription": current_user.subscription.replace(f'{subscription}, ', '')}
         else:

@@ -1,1 +1,39 @@
 2024-06-28 at 04:47:20 | ERROR | client.py:21 | Ошибка регистрации! | big-ivan
+2024-06-28 at 06:22:24 | INFO | download_info.py:48 | Файл ./data/2024-02-01/2024-02-01.zip успешно разархивирован в ./data/2024-02-01/. | big-ivan
+2024-06-28 at 06:22:25 | INFO | download_info.py:51 | Файл ./data/2024-02-01/2024-02-01.zip успешно удален. | big-ivan
+2024-06-28 at 06:22:38 | ERROR | functions.py:20 | Error running command gunzip ./data/2024-02-01/*.crx.gz; gunzip ./data/2024-02-01/*.24d.Z:  | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:53 | [] | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CAS.service | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:53 | ['publisher_CAS.service'] | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CED.service | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:53 | ['publisher_CAS.service', 'publisher_CED.service'] | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CCJ.service | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:61 | Reloading systemd manager configuration... | big-ivan
+2024-06-28 at 06:28:00 | INFO | create_services.py:65 | Enabling and starting service: publisher_CAS.service | big-ivan
+2024-06-28 at 06:28:01 | INFO | create_services.py:65 | Enabling and starting service: publisher_CED.service | big-ivan
+2024-06-28 at 06:28:02 | INFO | create_services.py:65 | Enabling and starting service: publisher_CCJ.service | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:53 | [] | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CAS.service | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:53 | ['publisher_CAS.service'] | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CED.service | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:53 | ['publisher_CAS.service', 'publisher_CED.service'] | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CCJ.service | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:61 | Reloading systemd manager configuration... | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:65 | Enabling and starting service: publisher_CAS.service | big-ivan
+2024-06-28 at 06:34:00 | INFO | create_services.py:65 | Enabling and starting service: publisher_CED.service | big-ivan
+2024-06-28 at 06:34:01 | INFO | create_services.py:65 | Enabling and starting service: publisher_CCJ.service | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:53 | [] | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CAS.service | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:53 | ['publisher_CAS.service'] | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CED.service | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:53 | ['publisher_CAS.service', 'publisher_CED.service'] | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:28 | Created service file: /etc/systemd/system/publisher_CCJ.service | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:61 | Reloading systemd manager configuration... | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:65 | Enabling and starting service: publisher_CAS.service | big-ivan
+2024-06-28 at 06:35:00 | INFO | create_services.py:65 | Enabling and starting service: publisher_CED.service | big-ivan
+2024-06-28 at 06:35:01 | INFO | create_services.py:65 | Enabling and starting service: publisher_CCJ.service | big-ivan
+2024-06-28 at 06:37:20 | ERROR | client.py:21 | Ошибка регистрации! | big-ivan
+2024-06-28 at 06:37:38 | ERROR | client.py:21 | Ошибка регистрации! | big-ivan
+2024-06-28 at 06:38:06 | ERROR | client.py:41 | Не подписалось! | big-ivan
+2024-06-28 at 07:09:01 | ERROR | client.py:88 | Не удалось отписаться от топика. | big-ivan
+2024-06-28 at 07:09:29 | ERROR | client.py:77 | Не удалось подписаться на топик. | big-ivan

@@ -106,10 +106,22 @@ def unsubscribe(token, topic: str):
         'Authorization': f'Bearer {token}'
     }
     response = requests.patch(url, headers=headers)
-    if response.status_code == 404 or response.status_code == 422:
+    if response.status_code == 404 or response.status_code == 422 or response.status_code == 503:
+        print(response.json())
         return False
  
     return True
+
+def get_user_topics(token):
+    url = 'http://0.0.0.0:8000/user/get_all_user_subs/'
+    headers = {
+        'accept': 'application/json',
+        'Authorization': f'Bearer {token}'
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 404:
+        print(response['detail'])
+    return response
 
 def get_streams(token, client: mqtt_client.Client):
     url = 'http://0.0.0.0:8000/user/get_all_user_subs/'
