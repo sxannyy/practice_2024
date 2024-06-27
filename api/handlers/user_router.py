@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from logging import getLogger
 from typing import List
 from uuid import UUID
@@ -156,7 +157,7 @@ async def subscribe(
         raise HTTPException(status_code=422, detail=f"The name of the topic should contain 3 letters.")
     if current_user.subscription is not None and subscription in current_user.subscription: 
         raise HTTPException(status_code=422, detail=f"The name of the topic already exists.")
-    if subscription not in get_pub_names('2024-02-01'):
+    if subscription not in get_pub_names((date.today() - timedelta(days=3, weeks=25)).strftime("%Y-%d-%m")):
         raise HTTPException(status_code=404, detail=f"The name of the topic doesn't exist.")
     if current_user.subscription is not None:
         updated_user_params = {"subscription": current_user.subscription + ", " + subscription}
@@ -269,4 +270,4 @@ async def get_topics(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user_from_token),
 ) -> ShowTopics:
-    return ShowTopics(topic_names=get_pub_names('2024-02-01'))
+    return ShowTopics(topic_names=get_pub_names((date.today() - timedelta(days=3, weeks=25)).strftime("%Y-%d-%m")))

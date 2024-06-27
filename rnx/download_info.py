@@ -1,11 +1,12 @@
 import sys
 import zipfile
 import requests
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 import os
 import asyncio
 import shutil
 from functions import run_command
+from logger_settings import logger
 
 
 data_dir = './data/'
@@ -44,14 +45,14 @@ def unzip_and_delete(zip_path, extract_to):
 
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
-        # print(f"Файл {zip_path} успешно разархивирован в {extract_to}.")
+        logger.info(f"Файл {zip_path} успешно разархивирован в {extract_to}.")
 
     os.remove(zip_path)
-    # print(f"Файл {zip_path} успешно удален.")
+    logger.info(f"Файл {zip_path} успешно удален.")
 
 
 async def download_info(date: date):
-    delete_everything_in_folder(f'{data_dir}{(date - timedelta(days=6)).strftime("%Y-%d-%m")}')
+    delete_everything_in_folder(f'{data_dir}{(date.today() - timedelta(days=5, weeks=25)).strftime("%Y-%d-%m")}')
     date = date.strftime("%Y-%d-%m")
     directory = f"{date}/"
 
@@ -83,4 +84,4 @@ async def download_info(date: date):
     await decompress_all_data(directory)
 
 async def get_info():
-    await download_info(date.today() - timedelta(days=4, weeks=25))
+    await download_info(date.today() - timedelta(days=3, weeks=25))

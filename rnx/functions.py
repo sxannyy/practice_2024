@@ -2,10 +2,10 @@ import asyncio
 from datetime import date, timedelta
 import json
 import paho.mqtt.client as mqtt_client
-from paho.mqtt.enums import MQTTErrorCode
 import subprocess
 import os
 import requests
+from logger_settings import logger
 
 
 async def run_command(command):
@@ -17,6 +17,7 @@ async def run_command(command):
     stdout, stderr = await process.communicate()
     if process.returncode != 0:
         print(f"Error running command {command}: {stderr.decode().strip()}")
+        logger.error(f"Error running command {command}: {stderr.decode().strip()}")
     return stdout, stderr
 
 def run_asyncio_job(job):
@@ -30,6 +31,7 @@ def delete_publisher_services(directory='/etc/systemd/system'):
         # Проверяем, что директория существует
         if not os.path.exists(directory):
             print(f"Directory {directory} does not exist.")
+            logger.warning(f"Directory {directory} does not exist.")
             return
 
         os.system('sudo rm /etc/systemd/system/publisher_*')
@@ -38,7 +40,7 @@ def delete_publisher_services(directory='/etc/systemd/system'):
         print(f"An error occurred: {e}")
 
 async def create_services():
-    await run_command(f'sudo python3 ./rnx/create_services.py {(date.today() - timedelta(days=4, weeks=25)).strftime("%Y-%d-%m")}')
+    await run_command(f'sudo python3 ./rnx/create_services.py {(date.today() - timedelta(days=3, weeks=25)).strftime("%Y-%d-%m")}')
 
 def get_pub_names(date: date):
     files = os.listdir(f'/home/ivan/praktika/data/{date}')
@@ -76,6 +78,15 @@ def login(email: str, password: str):
     
     return response
 
+def get_user(token):
+    headers = {
+        'accept': 'application/json',
+        'Authorization': f'Bearer {token}'
+    }
+    response = requests.get('http://0.0.0.0:8000/user/get_user_id/', headers=headers)
+
+    return response
+
 def subscribe(token, topic: str):
     url = f'http://0.0.0.0:8000/user/subscribe/?subscription={topic}'
     headers = {
@@ -106,12 +117,13 @@ def get_streams(token, client: mqtt_client.Client):
         'accept': 'application/json',
         'Authorization': f'Bearer {token}'
     }
-    response = requests.patch(url, headers=headers)
+    response = requests.get(url, headers=headers)
     if response.status_code == 404:
         print(response['detail'])
     
     print('Получение потока:')
-    for topic in response['subscription'].split(', '):
+    print(response.json())
+    for topic in response.json()['subscription'].split(', '):
         client.subscribe(f"rnx/data/{topic}")
 
 def show_topics(token):
@@ -121,4 +133,4 @@ def show_topics(token):
     }
     response = requests.get('http://0.0.0.0:8000/user/get_topics/', headers=headers)
 
-    return response['topic_names']
+    return response.json()['topic_names']
